@@ -112,7 +112,10 @@ The production build is hosted on **AWS S3** (static file storage) and served th
 ## Security
 
 - No API keys, passwords, or credentials are committed to this repository — all secrets are loaded via environment variables (`.env`, gitignored, template provided in `.env.example`).
-- Row Level Security (RLS) policies on all Supabase tables ensure only authenticated admin users can create, update, or delete portfolio data; public visitors have read-only access (with public insert access for contact form submissions).
+- Row Level Security (RLS) policies on all Supabase tables ensure strict separation of permissions:
+  - **Portfolio Content (`projects`, `skills`, `experience`)**: Public read access (`SELECT`) for all visitors; write operations (`INSERT`, `UPDATE`, `DELETE`) are strictly restricted `TO authenticated` admin users.
+  - **Contact Messages (`contact_messages`)**: Public visitors (`anon, authenticated`) can submit messages via `INSERT`, while reading (`SELECT`), modifying read status (`UPDATE`), and deleting (`DELETE`) are strictly restricted `TO authenticated` users.
+  - **Storage (`project-images` bucket)**: Public read access for displaying uploaded images; uploads, modifications, and deletions are strictly restricted `TO authenticated` users.
 
 ---
 
