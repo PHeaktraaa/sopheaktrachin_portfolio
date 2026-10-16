@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { useAdmin } from '../contexts/AdminContext';
 import { ThemeToggle } from './ThemeToggle';
@@ -14,44 +14,104 @@ const navLinks = [
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [hasKeyboardFocus, setHasKeyboardFocus] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const { isAdmin, setShowLogin, logout } = useAdmin();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 30);
+  const lastScrollYRef = useRef(0);
+  const isNavigatingRef = useRef(false);
+  const navRef = useRef<HTMLElement>(null);
 
-      const sections = navLinks.map((link) => link.href.slice(1));
-      for (const section of [...sections].reverse()) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 180) {
-            setActiveSection(section);
-            break;
+  useEffect(() => {
+    let ticking = false;
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const prevScrollY = lastScrollYRef.current;
+          const diff = currentScrollY - prevScrollY;
+
+          // 1. Solid background past 10px
+          setScrolled(currentScrollY > 10);
+
+          // 2. Hide / show logic
+          if (isNavigatingRef.current) {
+            // During programmed nav link smooth scrolling, keep nav visible
+            setIsVisible(true);
+          } else if (currentScrollY <= 80) {
+            // Near the top of the page, always show
+            setIsVisible(true);
+          } else if (Math.abs(diff) >= 8) {
+            // Scroll down hides, scroll up shows
+            if (diff > 0) {
+              setIsVisible(false);
+            } else {
+              setIsVisible(true);
+            }
           }
-        }
+
+          lastScrollYRef.current = currentScrollY;
+
+          // Active section highlight tracking
+          const sections = navLinks.map((link) => link.href.slice(1));
+          for (const section of [...sections].reverse()) {
+            const element = document.getElementById(section);
+            if (element) {
+              const rect = element.getBoundingClientRect();
+              if (rect.top <= 180) {
+                setActiveSection(section);
+                break;
+              }
+            }
+          }
+
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const handleNavClick = (href: string) => {
     setIsOpen(false);
+    setIsVisible(true);
+    isNavigatingRef.current = true;
+
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+
+    // Reset smooth scroll navigation lock after smooth scrolling completes
+    window.setTimeout(() => {
+      isNavigatingRef.current = false;
+      lastScrollYRef.current = window.scrollY;
+    }, 800);
   };
+
+  // Nav is forced visible if near top, if mobile menu is open, or if an item inside has focus
+  const showNav = isVisible || isOpen || hasKeyboardFocus;
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 border-b ${
+      ref={navRef}
+      onFocus={() => setHasKeyboardFocus(true)}
+      onBlur={(e) => {
+        if (!navRef.current?.contains(e.relatedTarget as Node)) {
+          setHasKeyboardFocus(false);
+        }
+      }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-[transform,background-color,border-color] duration-200 motion-reduce:transition-none ${
+        showNav ? 'translate-y-0 ease-out' : '-translate-y-full ease-out'
+      } ${
         scrolled
-          ? 'bg-bg/95 border-line'
-          : 'bg-bg/80 border-line/60'
+          ? 'bg-bg border-b border-line'
+          : 'bg-transparent border-b border-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
