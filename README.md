@@ -111,8 +111,8 @@ The production build is hosted on **AWS S3** (static file storage) and served th
 
 ## Security
 
-- No API keys, passwords, or credentials are committed to this repository — all secrets are loaded via environment variables (`.env`, gitignored).
-- Row Level Security (RLS) policies on all Supabase tables ensure only authenticated admin users can create, update, or delete data; public visitors have read-only access.
+- No API keys, passwords, or credentials are committed to this repository — all secrets are loaded via environment variables (`.env`, gitignored, template provided in `.env.example`).
+- Row Level Security (RLS) policies on all Supabase tables ensure only authenticated admin users can create, update, or delete portfolio data; public visitors have read-only access (with public insert access for contact form submissions).
 
 ---
 
