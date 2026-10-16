@@ -27,16 +27,16 @@ export function AdminLoginModal() {
   };
 
   return (
-    <div className="fixed inset-0 bg-ink/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-      <div className="bg-bg border border-line p-6 sm:p-8 max-w-sm w-full">
+    <div className="fixed inset-0 bg-ink/60 z-[100] flex items-center justify-center p-4">
+      <div className="bg-surface border border-line p-6 sm:p-8 max-w-sm w-full text-ink">
         <div className="flex items-baseline justify-between mb-6 pb-4 border-b border-line">
           <div className="flex items-center gap-2">
-            <Lock className="w-4 h-4 text-ink-muted" />
+            <Lock className="w-4 h-4 text-muted" />
             <h3 className="font-serif text-2xl font-normal text-ink">Admin Session</h3>
           </div>
           <button
             onClick={() => setShowLogin(false)}
-            className="text-ink-muted hover:text-ink p-1"
+            className="text-muted hover:text-ink p-1"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -44,14 +44,14 @@ export function AdminLoginModal() {
         </div>
 
         {error && (
-          <div className="mb-5 p-3 border border-accent/30 bg-accent-light text-accent text-xs font-mono">
+          <div className="mb-5 p-3 border border-red-500/30 bg-bg text-red-600 dark:text-red-400 text-xs font-mono">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Email Address
             </label>
             <input
@@ -66,7 +66,7 @@ export function AdminLoginModal() {
           </div>
 
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Password
             </label>
             <input

@@ -32,20 +32,20 @@ function ExperienceForm({
   };
 
   return (
-    <div className="fixed inset-0 bg-ink/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-bg border border-line p-6 sm:p-8 max-w-lg w-full">
+    <div className="fixed inset-0 bg-ink/60 z-50 flex items-center justify-center p-4">
+      <div className="bg-surface border border-line p-6 sm:p-8 max-w-lg w-full text-ink">
         <div className="flex items-baseline justify-between mb-6 pb-4 border-b border-line">
           <h3 className="font-serif text-2xl font-normal text-ink">
             {experience ? 'Edit Record' : 'Add Background Entry'}
           </h3>
-          <button onClick={onCancel} className="text-ink-muted hover:text-ink p-1">
+          <button onClick={onCancel} className="text-muted hover:text-ink p-1">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Entry Type
             </label>
             <div className="flex gap-2">
@@ -56,8 +56,8 @@ function ExperienceForm({
                   onClick={() => setFormData({ ...formData, type: t })}
                   className={`flex-1 py-2 font-mono text-xs uppercase tracking-wider border transition-colors ${
                     formData.type === t
-                      ? 'border-ink bg-ink text-bg'
-                      : 'border-line text-ink-muted hover:border-ink'
+                      ? 'border-accent bg-accent text-on-accent'
+                      : 'border-line text-muted hover:border-ink hover:text-ink'
                   }`}
                 >
                   {t}
@@ -67,7 +67,7 @@ function ExperienceForm({
           </div>
 
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Title / Degree *
             </label>
             <input
@@ -75,13 +75,13 @@ function ExperienceForm({
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="input"
-              placeholder="e.g. Bachelor of Science in Software Engineering"
+              placeholder="e.g. Associate Degree in Web Development"
               required
             />
           </div>
 
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Institution / Company *
             </label>
             <input
@@ -89,14 +89,14 @@ function ExperienceForm({
               value={formData.organization}
               onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
               className="input"
-              placeholder="e.g. University / Agency"
+              placeholder="e.g. University / Company name"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
                 Start Date *
               </label>
               <input
@@ -108,7 +108,7 @@ function ExperienceForm({
               />
             </div>
             <div>
-              <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
                 End Date (Empty = Present)
               </label>
               <input
@@ -121,7 +121,7 @@ function ExperienceForm({
           </div>
 
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Notes / Description
             </label>
             <textarea
@@ -195,13 +195,13 @@ export function ExperienceSection() {
   };
 
   return (
-    <section id="experience" className="py-24 md:py-32 border-b border-line">
+    <section id="experience" className="py-24 md:py-32 border-b border-line bg-bg">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-16 pb-6 border-b border-line gap-4">
           <div className="flex items-baseline gap-4">
-            <span className="font-mono text-sm text-ink-soft">04</span>
-            <h2 className="section-title">Background</h2>
+            <span className="font-mono text-sm text-accent">04</span>
+            <h2 className="section-title">Experience &amp; Education</h2>
           </div>
 
           <div className="flex items-center gap-6">
@@ -212,13 +212,13 @@ export function ExperienceSection() {
                     onClick={() => setActiveTab(tab)}
                     className={`py-1 capitalize transition-colors ${
                       activeTab === tab
-                        ? 'text-ink font-medium border-b border-ink'
-                        : 'text-ink-muted hover:text-ink'
+                        ? 'text-accent font-medium border-b border-accent'
+                        : 'text-muted hover:text-ink'
                     }`}
                   >
                     {tab}
                   </button>
-                  {idx < 2 && <span className="text-line-dark">/</span>}
+                  {idx < 2 && <span className="text-line">/</span>}
                 </div>
               ))}
             </div>
@@ -256,7 +256,7 @@ export function ExperienceSection() {
         {/* Empty state */}
         {!loading && filtered.length === 0 && (
           <div className="py-16 text-center border border-dashed border-line">
-            <p className="text-ink-muted font-mono text-sm">No records found.</p>
+            <p className="text-muted font-mono text-sm">No records found.</p>
             {isAdmin && (
               <button
                 onClick={() => {
@@ -271,7 +271,7 @@ export function ExperienceSection() {
           </div>
         )}
 
-        {/* Two-column Chronological List with Mono Dates on the Left */}
+        {/* Two-column Chronological List with Mono Dates on Left */}
         {!loading && filtered.length > 0 && (
           <div className="divide-y divide-line">
             {filtered.map((item) => (
@@ -279,17 +279,17 @@ export function ExperienceSection() {
                 key={item.id}
                 className="py-10 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12 group"
               >
-                {/* Left: Date & Type */}
+                {/* Left: Date in Mono & Entry Type */}
                 <div className="lg:col-span-3">
-                  <p className="font-mono text-xs uppercase tracking-wider text-ink-muted">
+                  <p className="font-mono text-xs uppercase tracking-wider text-ink font-medium">
                     {formatPeriod(item.start_date, item.end_date)}
                   </p>
-                  <p className="font-mono text-[11px] text-ink-soft uppercase mt-1">
+                  <p className="font-mono text-[11px] text-muted uppercase mt-1">
                     {item.type}
                   </p>
                 </div>
 
-                {/* Right: Title, Organization, Description, Admin */}
+                {/* Right: Title, Organization, Description, Admin controls */}
                 <div className="lg:col-span-9">
                   <div className="flex items-baseline justify-between gap-4 mb-2">
                     <h3 className="font-serif text-xl sm:text-2xl font-normal text-ink group-hover:text-accent transition-colors">
@@ -300,14 +300,14 @@ export function ExperienceSection() {
                       <div className="flex items-center gap-1 shrink-0">
                         <button
                           onClick={() => handleEdit(item)}
-                          className="p-1 text-ink-muted hover:text-ink"
+                          className="p-1 text-muted hover:text-ink"
                           title="Edit"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDelete(item.id)}
-                          className="p-1 text-ink-muted hover:text-accent"
+                          className="p-1 text-muted hover:text-accent"
                           title="Delete"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -316,12 +316,12 @@ export function ExperienceSection() {
                     )}
                   </div>
 
-                  <p className="font-sans text-sm font-medium text-ink-muted mb-3">
+                  <p className="font-sans text-sm font-medium text-muted mb-3">
                     {item.organization}
                   </p>
 
                   {item.description && (
-                    <p className="text-sm text-ink-muted leading-relaxed font-light max-w-2xl">
+                    <p className="text-sm text-ink/80 leading-relaxed font-light max-w-[65ch]">
                       {item.description}
                     </p>
                   )}

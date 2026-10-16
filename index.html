@@ -4,15 +4,28 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sopheaktra Chin | Portfolio</title>
-    <meta name="description" content="Professional portfolio of Sopheaktra Chin - Software Engineering Student and Graphic Designer" />
-    <meta property="og:title" content="Sopheaktra Chin | Software Developer Portfolio" />
-    <meta property="og:description" content="Professional portfolio showcasing web development projects and technical skills." />
+    <title>Sopheaktra Chin | Software Engineering &amp; Design</title>
+    <meta name="description" content="Portfolio of Sopheaktra Chin — Software Engineering Student & Graphic Designer based in Phnom Penh." />
+    <meta property="og:title" content="Sopheaktra Chin | Portfolio" />
+    <meta property="og:description" content="Software engineering student and graphic designer building web systems and visual identities." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('portfolio_theme');
+          var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

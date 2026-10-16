@@ -4,7 +4,7 @@ import { useAdmin } from '../../contexts/AdminContext';
 import { Plus, Pencil, Trash2, X, Check } from 'lucide-react';
 import type { Skill } from '../../lib/supabase';
 
-const DEFAULT_CATEGORY = 'Graphic Design';
+const DEFAULT_CATEGORY = 'Tools / Design';
 
 function SkillForm({
   skill,
@@ -29,15 +29,15 @@ function SkillForm({
   };
 
   return (
-    <div className="fixed inset-0 bg-ink/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-bg border border-line p-6 sm:p-8 max-w-md w-full">
+    <div className="fixed inset-0 bg-ink/60 z-50 flex items-center justify-center p-4">
+      <div className="bg-surface border border-line p-6 sm:p-8 max-w-md w-full text-ink">
         <div className="flex items-baseline justify-between mb-6 pb-4 border-b border-line">
           <h3 className="font-serif text-2xl font-normal text-ink">
             {skill ? 'Edit Skill' : 'Add New Skill'}
           </h3>
           <button
             onClick={onCancel}
-            className="text-ink-muted hover:text-ink p-1"
+            className="text-muted hover:text-ink p-1"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -46,7 +46,7 @@ function SkillForm({
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Skill Name *
             </label>
             <input
@@ -54,23 +54,26 @@ function SkillForm({
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="input"
-              placeholder="e.g. Adobe Illustrator, Figma, Brand Systems"
+              placeholder="e.g. React, PostgreSQL, Adobe Illustrator"
               required
             />
           </div>
 
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Category
             </label>
-            <input
-              type="text"
+            <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               className="input"
-              placeholder="e.g. Graphic Design, Frontend, Tools"
-              required
-            />
+            >
+              <option value="Frontend">Frontend</option>
+              <option value="Backend">Backend</option>
+              <option value="Database">Database</option>
+              <option value="Tools / Design">Tools / Design</option>
+              <option value="Graphic Design">Graphic Design</option>
+            </select>
           </div>
 
           <div className="flex gap-3 pt-4 border-t border-line">
@@ -96,13 +99,16 @@ export function Skills() {
 
   // Group skills by category cleanly without fake percentage bars
   const groupedSkills = skills.reduce<Record<string, Skill[]>>((acc, skill) => {
-    const cat = skill.category || 'General';
+    const rawCat = skill.category || 'Tools / Design';
+    const cat = rawCat === 'Graphic Design' ? 'Tools / Design' : rawCat;
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(skill);
     return acc;
   }, {});
 
-  const categories = Object.keys(groupedSkills);
+  // Pre-seed canonical categories if not present
+  const standardCategories = ['Frontend', 'Backend', 'Database', 'Tools / Design'];
+  const allCategoryNames = Array.from(new Set([...standardCategories, ...Object.keys(groupedSkills)]));
 
   const handleEdit = (skill: Skill) => {
     setEditingSkill(skill);
@@ -132,17 +138,17 @@ export function Skills() {
   };
 
   return (
-    <section id="skills" className="py-24 md:py-32 border-b border-line">
+    <section id="skills" className="py-24 md:py-32 border-b border-line bg-bg">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-16 pb-6 border-b border-line gap-4">
           <div className="flex items-baseline gap-4">
-            <span className="font-mono text-sm text-ink-soft">02</span>
-            <h2 className="section-title">Capabilities</h2>
+            <span className="font-mono text-sm text-accent">03</span>
+            <h2 className="section-title">Skills &amp; Toolkit</h2>
           </div>
           <div className="flex items-center gap-4">
-            <p className="font-mono text-xs uppercase tracking-widest text-ink-muted">
-              Tools &amp; Competencies
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              03 / Competencies
             </p>
             {isAdmin && (
               <button
@@ -160,8 +166,8 @@ export function Skills() {
 
         {/* Loading Skeleton */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((n) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[1, 2, 3, 4].map((n) => (
               <div key={n} className="border-t border-line pt-6 animate-pulse">
                 <div className="h-4 w-28 bg-line mb-6" />
                 <div className="space-y-3">
@@ -177,7 +183,7 @@ export function Skills() {
         {/* Empty State */}
         {!loading && skills.length === 0 && (
           <div className="py-16 text-center border border-dashed border-line">
-            <p className="text-ink-muted font-mono text-sm">No capabilities listed yet.</p>
+            <p className="text-muted font-mono text-sm">No skills added yet.</p>
             {isAdmin && (
               <button
                 onClick={() => {
@@ -194,51 +200,60 @@ export function Skills() {
 
         {/* Grouped Plain-Text Columns */}
         {!loading && skills.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
-            {categories.map((category, catIdx) => (
-              <div key={category} className="border-t border-line pt-6">
-                <div className="flex items-baseline justify-between mb-6">
-                  <h3 className="font-serif text-xl font-normal text-ink">
-                    {category}
-                  </h3>
-                  <span className="font-mono text-xs text-ink-soft">
-                    ({String(catIdx + 1).padStart(2, '0')})
-                  </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+            {allCategoryNames.map((category, catIdx) => {
+              const categorySkills = groupedSkills[category] || [];
+              return (
+                <div key={category} className="border-t border-line pt-6">
+                  <div className="flex items-baseline justify-between mb-5">
+                    <h3 className="font-serif text-xl font-normal text-ink">
+                      {category}
+                    </h3>
+                    <span className="font-mono text-xs text-muted">
+                      ({String(catIdx + 1).padStart(2, '0')})
+                    </span>
+                  </div>
+
+                  {categorySkills.length === 0 ? (
+                    <p className="font-mono text-xs text-muted/60 py-2">
+                      None listed
+                    </p>
+                  ) : (
+                    <ul className="divide-y divide-line font-sans text-sm">
+                      {categorySkills.map((skill) => (
+                        <li
+                          key={skill.id}
+                          className="py-2.5 flex items-center justify-between group hover:text-accent transition-colors duration-150"
+                        >
+                          <span className="text-ink font-light group-hover:text-accent">
+                            {skill.name}
+                          </span>
+
+                          {isAdmin && (
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={() => handleEdit(skill)}
+                                className="p-1 text-muted hover:text-ink"
+                                title="Edit"
+                              >
+                                <Pencil className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(skill.id)}
+                                className="p-1 text-muted hover:text-accent"
+                                title="Delete"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-
-                <ul className="divide-y divide-line font-sans text-sm">
-                  {groupedSkills[category].map((skill) => (
-                    <li
-                      key={skill.id}
-                      className="py-3 flex items-center justify-between group hover:text-accent transition-colors duration-150"
-                    >
-                      <span className="text-ink group-hover:text-accent font-medium">
-                        {skill.name}
-                      </span>
-
-                      {isAdmin && (
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => handleEdit(skill)}
-                            className="p-1 text-ink-muted hover:text-ink"
-                            title="Edit"
-                          >
-                            <Pencil className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(skill.id)}
-                            className="p-1 text-ink-muted hover:text-accent"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

@@ -55,10 +55,10 @@ function ProjectRow({
   return (
     <article className="border-t border-line py-12 lg:py-16 group">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Left Column: Number, Title, Description, Metadata */}
+        {/* Left Column: Number, Title, Description, Plain-text Tech Tags, Links */}
         <div className="lg:col-span-5 flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-3 font-mono text-xs text-ink-muted mb-3">
+            <div className="flex items-center gap-3 font-mono text-xs text-muted mb-3">
               <span>{String(index + 1).padStart(2, '0')}</span>
               {project.featured && (
                 <>
@@ -72,17 +72,17 @@ function ProjectRow({
 
             <h3
               onClick={() => onOpenLightbox(project, activeImgIndex)}
-              className="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal text-ink group-hover:text-accent transition-colors duration-150 cursor-pointer mb-4 leading-tight"
+              className="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal text-ink group-hover:text-accent transition-colors duration-150 cursor-pointer mb-4 leading-tight group-hover:underline decoration-accent underline-offset-4"
             >
               {project.title}
             </h3>
 
-            <p className="text-ink-muted text-sm sm:text-base leading-relaxed mb-6 font-light">
+            <p className="text-ink/80 text-sm sm:text-base leading-relaxed mb-6 font-light max-w-[55ch]">
               {project.description}
             </p>
 
-            {/* Plain-text Tech Tags (no glass pills) */}
-            <div className="flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-ink-soft mb-8">
+            {/* Plain-text Tech Tags (no pills) */}
+            <div className="flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-muted mb-8">
               {project.technologies.map((tech) => (
                 <span key={tech} className="after:content-[','] last:after:content-['']">
                   {tech}
@@ -91,7 +91,7 @@ function ProjectRow({
             </div>
           </div>
 
-          {/* Links & Admin CRUD */}
+          {/* Links & Admin Controls */}
           <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-line">
             {project.live_url && (
               <a
@@ -110,7 +110,7 @@ function ProjectRow({
                 href={project.github_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-mono uppercase tracking-wider text-ink-muted hover:text-ink inline-flex items-center gap-1 transition-colors"
+                className="text-xs font-mono uppercase tracking-wider text-muted hover:text-ink inline-flex items-center gap-1 transition-colors"
               >
                 Source Code
                 <ArrowUpRight className="w-3.5 h-3.5" />
@@ -119,7 +119,7 @@ function ProjectRow({
 
             <button
               onClick={() => onOpenLightbox(project, activeImgIndex)}
-              className="text-xs font-mono uppercase tracking-wider text-ink-muted hover:text-ink inline-flex items-center gap-1 transition-colors"
+              className="text-xs font-mono uppercase tracking-wider text-muted hover:text-accent inline-flex items-center gap-1 transition-colors"
             >
               Gallery ({images.length})
             </button>
@@ -128,13 +128,13 @@ function ProjectRow({
               <div className="flex items-center gap-2 ml-auto">
                 <button
                   onClick={() => onEdit(project)}
-                  className="font-mono text-xs px-2 py-1 border border-line text-ink-muted hover:border-ink hover:text-ink transition-colors flex items-center gap-1"
+                  className="font-mono text-xs px-2 py-1 border border-line text-muted hover:border-ink hover:text-ink transition-colors flex items-center gap-1"
                 >
                   <Pencil className="w-3 h-3" /> Edit
                 </button>
                 <button
                   onClick={() => onDelete(project.id)}
-                  className="font-mono text-xs px-2 py-1 border border-line text-ink-muted hover:border-accent hover:text-accent transition-colors flex items-center gap-1"
+                  className="font-mono text-xs px-2 py-1 border border-line text-muted hover:border-accent hover:text-accent transition-colors flex items-center gap-1"
                 >
                   <Trash2 className="w-3 h-3" /> Delete
                 </button>
@@ -143,23 +143,23 @@ function ProjectRow({
           </div>
         </div>
 
-        {/* Right Column: Large Image Presentation */}
+        {/* Right Column: Large Image Row Presentation with subtle hover zoom */}
         <div className="lg:col-span-7">
           <div
-            className="relative border border-line bg-white p-2.5 cursor-pointer overflow-hidden"
+            className="relative border border-line bg-surface p-2 cursor-pointer overflow-hidden"
             onClick={() => onOpenLightbox(project, activeImgIndex)}
           >
-            <div className="aspect-[16/10] overflow-hidden bg-bg-subtle relative">
+            <div className="aspect-[16/10] overflow-hidden bg-bg relative">
               <img
                 src={images[activeImgIndex]}
-                alt={`${project.title} screenshot ${activeImgIndex + 1}`}
+                alt={`${project.title} preview ${activeImgIndex + 1}`}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
               />
 
-              {/* In-row pagination if multi-image */}
+              {/* In-row image counter and arrows */}
               {images.length > 1 && (
                 <div
-                  className="absolute bottom-3 right-3 bg-ink/90 text-bg px-2.5 py-1 text-xs font-mono flex items-center gap-3"
+                  className="absolute bottom-3 right-3 bg-ink/90 text-surface px-2.5 py-1 text-xs font-mono flex items-center gap-3"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <span>
@@ -255,23 +255,23 @@ function ProjectLightbox({
       onClick={onClose}
     >
       {/* Top Bar */}
-      <div className="absolute top-6 left-6 right-6 flex items-center justify-between text-bg z-10 border-b border-ink-muted/30 pb-4">
+      <div className="absolute top-6 left-6 right-6 flex items-center justify-between text-surface z-10 border-b border-muted/30 pb-4">
         <div>
           <p className="font-serif text-lg font-normal">{project.title}</p>
-          <p className="font-mono text-xs text-ink-soft">
+          <p className="font-mono text-xs text-muted">
             Figure {index + 1} of {images.length}
           </p>
         </div>
         <button
           onClick={onClose}
-          className="p-2 text-ink-soft hover:text-bg transition-colors"
+          className="p-2 text-muted hover:text-surface transition-colors"
           aria-label="Close lightbox"
         >
           <X className="w-6 h-6" />
         </button>
       </div>
 
-      {/* Main Image Container */}
+      {/* Main Image */}
       <div
         className="relative max-w-5xl max-h-[75vh] w-full flex items-center justify-center"
         onClick={(e) => e.stopPropagation()}
@@ -293,8 +293,8 @@ function ProjectLightbox({
                 e.stopPropagation();
                 goPrev();
               }}
-              className="absolute left-2 sm:-left-12 top-1/2 -translate-y-1/2 p-2 bg-ink/80 text-bg border border-ink-muted/40 hover:border-bg transition-colors"
-              aria-label="Previous"
+              className="absolute left-2 sm:-left-12 top-1/2 -translate-y-1/2 p-2 bg-ink/80 text-surface border border-line hover:border-accent transition-colors"
+              aria-label="Previous image"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -303,8 +303,8 @@ function ProjectLightbox({
                 e.stopPropagation();
                 goNext();
               }}
-              className="absolute right-2 sm:-right-12 top-1/2 -translate-y-1/2 p-2 bg-ink/80 text-bg border border-ink-muted/40 hover:border-bg transition-colors"
-              aria-label="Next"
+              className="absolute right-2 sm:-right-12 top-1/2 -translate-y-1/2 p-2 bg-ink/80 text-surface border border-line hover:border-accent transition-colors"
+              aria-label="Next image"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -416,13 +416,13 @@ function ProjectForm({
   };
 
   return (
-    <div className="fixed inset-0 bg-ink/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-bg border border-line p-6 sm:p-8 max-w-2xl w-full my-8">
+    <div className="fixed inset-0 bg-ink/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-surface border border-line p-6 sm:p-8 max-w-2xl w-full my-8 text-ink">
         <div className="flex items-baseline justify-between mb-6 pb-4 border-b border-line">
           <h3 className="font-serif text-2xl font-normal text-ink">
             {project ? 'Edit Project' : 'Add New Project'}
           </h3>
-          <button onClick={onCancel} className="text-ink-muted hover:text-ink p-1">
+          <button onClick={onCancel} className="text-muted hover:text-ink p-1">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -430,7 +430,7 @@ function ProjectForm({
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
                 Project Title *
               </label>
               <input
@@ -443,7 +443,7 @@ function ProjectForm({
               />
             </div>
             <div>
-              <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
                 Technologies (comma-separated) *
               </label>
               <input
@@ -458,7 +458,7 @@ function ProjectForm({
           </div>
 
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Description *
             </label>
             <textarea
@@ -472,16 +472,16 @@ function ProjectForm({
 
           {/* Image Upload Area */}
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
               Images ({formData.image_urls.length}/{MAX_IMAGES})
             </label>
-            <label className="flex items-center justify-center gap-2 px-4 py-3 border border-dashed border-line-dark hover:border-ink cursor-pointer transition-colors bg-white">
+            <label className="flex items-center justify-center gap-2 px-4 py-3 border border-dashed border-line hover:border-accent cursor-pointer transition-colors bg-bg">
               {uploading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <Upload className="w-4 h-4 text-ink-muted" />
+                <Upload className="w-4 h-4 text-muted" />
               )}
-              <span className="font-mono text-xs text-ink-muted">
+              <span className="font-mono text-xs text-muted">
                 {uploading ? 'Uploading...' : 'Upload PNG / JPG'}
               </span>
               <input
@@ -510,7 +510,7 @@ function ProjectForm({
                     <button
                       type="button"
                       onClick={() => removeImage(url)}
-                      className="absolute -top-1.5 -right-1.5 p-1 bg-accent text-white opacity-0 group-hover/thumb:opacity-100 transition-opacity"
+                      className="absolute -top-1.5 -right-1.5 p-1 bg-accent text-on-accent opacity-0 group-hover/thumb:opacity-100 transition-opacity"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -522,7 +522,7 @@ function ProjectForm({
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
                 Live URL
               </label>
               <input
@@ -534,7 +534,7 @@ function ProjectForm({
               />
             </div>
             <div>
-              <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
                 GitHub Repository
               </label>
               <input
@@ -549,7 +549,7 @@ function ProjectForm({
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-2">
                 Display Order
               </label>
               <input
@@ -572,7 +572,7 @@ function ProjectForm({
                   id="featured"
                   checked={formData.featured}
                   onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                  className="rounded-none border-line-dark text-ink focus:ring-0"
+                  className="rounded-none border-line text-accent focus:ring-accent"
                 />
                 <span className="font-mono text-xs uppercase tracking-wider text-ink">
                   Feature in overview
@@ -645,12 +645,12 @@ export function Projects() {
     filter === 'featured' ? projects.filter((p) => p.featured) : projects;
 
   return (
-    <section id="projects" className="py-24 md:py-32 border-b border-line">
+    <section id="projects" className="py-24 md:py-32 border-b border-line bg-bg">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-8 pb-6 border-b border-line gap-4">
           <div className="flex items-baseline gap-4">
-            <span className="font-mono text-sm text-ink-soft">03</span>
+            <span className="font-mono text-sm text-accent">02</span>
             <h2 className="section-title">Selected Work</h2>
           </div>
           <div className="flex items-center gap-6">
@@ -659,19 +659,19 @@ export function Projects() {
                 onClick={() => setFilter('all')}
                 className={`py-1 transition-colors ${
                   filter === 'all'
-                    ? 'text-ink font-medium border-b border-ink'
-                    : 'text-ink-muted hover:text-ink'
+                    ? 'text-accent font-medium border-b border-accent'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 All ({projects.length})
               </button>
-              <span className="text-line-dark">/</span>
+              <span className="text-line">/</span>
               <button
                 onClick={() => setFilter('featured')}
                 className={`py-1 transition-colors ${
                   filter === 'featured'
-                    ? 'text-ink font-medium border-b border-ink'
-                    : 'text-ink-muted hover:text-ink'
+                    ? 'text-accent font-medium border-b border-accent'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 Featured ({projects.filter((p) => p.featured).length})
@@ -711,7 +711,7 @@ export function Projects() {
         {/* Empty state */}
         {!loading && filteredProjects.length === 0 && (
           <div className="py-20 text-center border border-dashed border-line">
-            <p className="text-ink-muted font-mono text-sm">No projects to display.</p>
+            <p className="text-muted font-mono text-sm">No projects to display.</p>
             {isAdmin && (
               <button
                 onClick={() => {

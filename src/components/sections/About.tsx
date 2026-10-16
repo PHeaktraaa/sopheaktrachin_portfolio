@@ -2,54 +2,54 @@ export function About() {
   const highlights = [
     { label: 'Location', value: 'Phnom Penh, Cambodia' },
     { label: 'Role', value: 'Software Engineering Student & Graphic Designer' },
-    { label: 'Focus', value: 'Full-stack Web Systems, Typography, Identity' },
-    { label: 'Interests', value: 'Badminton, Tea, Spatial Explorations' },
+    { label: 'Stack & Focus', value: 'React, TypeScript, Supabase, Editorial & Brand Design' },
+    { label: 'Current Studies', value: 'Web Development & Cloud Computing' },
   ];
 
   return (
-    <section id="about" className="py-24 md:py-32 border-b border-line">
+    <section id="about" className="py-24 md:py-32 border-b border-line bg-bg">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-16 pb-6 border-b border-line gap-4">
           <div className="flex items-baseline gap-4">
-            <span className="font-mono text-sm text-ink-soft">01</span>
+            <span className="font-mono text-sm text-accent">01</span>
             <h2 className="section-title">About</h2>
           </div>
-          <p className="font-mono text-xs uppercase tracking-widest text-ink-muted">
-            Background &amp; Intent
+          <p className="font-mono text-xs uppercase tracking-widest text-muted">
+            01 / Background
           </p>
         </div>
 
-        {/* Content Layout */}
+        {/* Two-column layout on desktop: heading left, text right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           <div className="lg:col-span-4">
             <h3 className="font-serif text-2xl sm:text-3xl font-normal text-ink leading-tight mb-4">
-              Building practical software with an eye for typography and structure.
+              Building software systems with visual clarity and engineering discipline.
             </h3>
-            <p className="text-sm font-mono text-ink-muted">
-              Engineering discipline combined with graphic design fundamentals.
+            <p className="text-sm font-mono text-muted">
+              Honest code, relational databases, and typography.
             </p>
           </div>
 
-          <div className="lg:col-span-8 space-y-6 text-base sm:text-lg text-ink-muted leading-relaxed font-light">
+          <div className="lg:col-span-8 space-y-6 text-base sm:text-lg text-ink font-light leading-relaxed max-w-[65ch]">
             <p>
-              I am a software engineering student based in Phnom Penh with a practical background in graphic design.
-              My work sits at the intersection of clean database architecture and straightforward, intentional visual systems.
+              I am a software engineering student based in Phnom Penh with practical experience in graphic design.
+              My work combines database design and frontend development with clean layout and typography.
             </p>
             <p>
-              Rather than assembling decorative surfaces, I focus on understanding data models, state flows, and typography that communicates clearly.
-              Whether implementing full CRUD workflows backed by PostgreSQL Row Level Security or drafting brand materials, I prefer honest tools, fast interfaces, and durable decisions over short-lived trends.
+              I focus on the fundamentals: relational data modeling in PostgreSQL, secure API interactions with Row Level Security, and responsive interfaces that load fast.
+              I avoid ornamental fluff and short-lived UI gimmicks, prioritizing clarity, accessibility, and longevity.
             </p>
             <p>
-              Currently expanding my experience across relational data modeling, modern React patterns, and production deployment on cloud infrastructure.
+              Outside of coursework, I experiment with brand identity systems, typography pairings, and full-stack side projects deployed on cloud platforms.
             </p>
 
-            {/* Structured Table */}
+            {/* Metadata Table */}
             <div className="pt-8 mt-8 border-t border-line">
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                 {highlights.map((item) => (
                   <div key={item.label} className="border-b border-line pb-4">
-                    <dt className="font-mono text-xs uppercase tracking-wider text-ink-soft mb-1">
+                    <dt className="font-mono text-xs uppercase tracking-wider text-muted mb-1">
                       {item.label}
                     </dt>
                     <dd className="font-sans text-sm text-ink font-medium">
