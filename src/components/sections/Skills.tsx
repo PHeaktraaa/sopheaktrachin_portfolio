@@ -1,65 +1,23 @@
 import { useState } from 'react';
 import { useSkills } from '../../hooks/useData';
 import { useAdmin } from '../../contexts/AdminContext';
-import { Palette, PenTool, Image, Layers, Sparkles, Plus, Pencil, Trash2, X, Check } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Check } from 'lucide-react';
 import type { Skill } from '../../lib/supabase';
 
-const CATEGORY = 'Graphic Design';
+const DEFAULT_CATEGORY = 'Graphic Design';
 
-const skillIcons: Record<string, React.ElementType> = {
-  'palette': Palette,
-  'pen-tool': PenTool,
-  'image': Image,
-  'figma': Sparkles,
-  'sparkles': Sparkles,
-  'layers': Layers,
-};
-
-function SkillCard({ skill, onEdit, onDelete, isAdmin }: { skill: Skill; onEdit: (skill: Skill) => void; onDelete: (id: string) => void; isAdmin: boolean }) {
-  const IconComponent = skill.icon ? (skillIcons[skill.icon] || Palette) : Palette;
-
-  return (
-    <div className="group relative card-hover p-5">
-      <div className="flex items-start justify-between mb-4">
-        <div className="p-2.5 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400">
-          <IconComponent className="w-5 h-5 text-white" />
-        </div>
-        {isAdmin && (
-          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              onClick={() => onEdit(skill)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-primary-400 hover:bg-slate-800 transition-colors"
-            >
-              <Pencil className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onDelete(skill.id)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-slate-800 transition-colors"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-      </div>
-      <h3 className="text-lg font-semibold text-slate-100 mb-3">{skill.name}</h3>
-      <div className="relative h-2 bg-slate-700 rounded-full overflow-hidden">
-        <div
-          className="absolute inset-y-0 left-0 bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full transition-all duration-1000"
-          style={{ width: `${skill.proficiency}%` }}
-        />
-      </div>
-      <div className="flex justify-between mt-2 text-sm">
-        <span className="text-slate-500">{skill.category}</span>
-        <span className="text-slate-400 font-medium">{skill.proficiency}%</span>
-      </div>
-    </div>
-  );
-}
-
-function SkillForm({ skill, onSave, onCancel }: { skill?: Skill | null; onSave: (data: Omit<Skill, 'id'>) => void; onCancel: () => void }) {
+function SkillForm({
+  skill,
+  onSave,
+  onCancel,
+}: {
+  skill?: Skill | null;
+  onSave: (data: Omit<Skill, 'id'>) => void;
+  onCancel: () => void;
+}) {
   const [formData, setFormData] = useState({
     name: skill?.name || '',
-    category: CATEGORY,
+    category: skill?.category || DEFAULT_CATEGORY,
     proficiency: skill?.proficiency || 80,
     icon: skill?.icon || 'palette',
     display_order: skill?.display_order || 0,
@@ -71,62 +29,57 @@ function SkillForm({ skill, onSave, onCancel }: { skill?: Skill | null; onSave: 
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="card w-full max-w-md p-6 animate-scale-in">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-slate-100">
+    <div className="fixed inset-0 bg-ink/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-bg border border-line p-6 sm:p-8 max-w-md w-full">
+        <div className="flex items-baseline justify-between mb-6 pb-4 border-b border-line">
+          <h3 className="font-serif text-2xl font-normal text-ink">
             {skill ? 'Edit Skill' : 'Add New Skill'}
           </h3>
-          <button onClick={onCancel} className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors">
+          <button
+            onClick={onCancel}
+            className="text-ink-muted hover:text-ink p-1"
+            aria-label="Close"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Skill Name</label>
+            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              Skill Name *
+            </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="input"
-              placeholder="e.g., Photoshop, Illustrator"
+              placeholder="e.g. Adobe Illustrator, Figma, Brand Systems"
               required
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Icon</label>
-            <select
-              value={formData.icon}
-              onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-              className="input"
-            >
-              <option value="palette">Palette</option>
-              <option value="pen-tool">Pen Tool</option>
-              <option value="image">Image</option>
-              <option value="figma">Figma</option>
-              <option value="layers">Layers</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
-              Proficiency: {formData.proficiency}%
+            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              Category
             </label>
             <input
-              type="range"
-              min="0"
-              max="100"
-              value={formData.proficiency}
-              onChange={(e) => setFormData({ ...formData, proficiency: parseInt(e.target.value) })}
-              className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-500"
+              type="text"
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="input"
+              placeholder="e.g. Graphic Design, Frontend, Tools"
+              required
             />
           </div>
-          <div className="flex gap-3 pt-4">
+
+          <div className="flex gap-3 pt-4 border-t border-line">
             <button type="button" onClick={onCancel} className="btn-secondary flex-1">
               Cancel
             </button>
             <button type="submit" className="btn-primary flex-1">
-              <Check className="w-4 h-4" />
-              {skill ? 'Update' : 'Add'} Skill
+              <Check className="w-4 h-4 mr-1" />
+              {skill ? 'Update' : 'Save'}
             </button>
           </div>
         </form>
@@ -137,11 +90,19 @@ function SkillForm({ skill, onSave, onCancel }: { skill?: Skill | null; onSave: 
 
 export function Skills() {
   const { skills, loading, createSkill, updateSkill, deleteSkill } = useSkills();
-  const { isAdmin, setShowLogin, logout } = useAdmin();
+  const { isAdmin } = useAdmin();
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  const designSkills = skills.filter((s) => s.category === CATEGORY);
+  // Group skills by category cleanly without fake percentage bars
+  const groupedSkills = skills.reduce<Record<string, Skill[]>>((acc, skill) => {
+    const cat = skill.category || 'General';
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(skill);
+    return acc;
+  }, {});
+
+  const categories = Object.keys(groupedSkills);
 
   const handleEdit = (skill: Skill) => {
     setEditingSkill(skill);
@@ -164,82 +125,119 @@ export function Skills() {
       setShowForm(false);
       setEditingSkill(null);
     } catch (err: any) {
-      const msg = err?.message || err?.error_description || err?.details || JSON.stringify(err);
-      alert(`Failed to save skill: ${msg}`);
-      console.error('Save skill error:', err);
+      const msg = err?.message || 'Failed to save skill';
+      alert(`Error: ${msg}`);
+      console.error(err);
     }
   };
 
-  if (loading) {
-    return (
-      <section id="skills" className="py-20 md:py-32 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="h-10 w-48 bg-slate-800 rounded-lg animate-pulse mx-auto mb-4" />
-            <div className="h-6 w-96 bg-slate-800 rounded animate-pulse mx-auto" />
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-40 bg-slate-800 rounded-2xl animate-pulse" />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section id="skills" className="py-20 md:py-32 bg-slate-900/50 relative">
-      <div className="absolute inset-0 bg-grid-pattern opacity-30" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="section-title gradient-text">Design Skills</h2>
-          <p className="section-subtitle mx-auto">
-            Graphic design tools and techniques I use to bring ideas to life
-          </p>
-          <button
-            onClick={() => (isAdmin ? logout() : setShowLogin(true))}
-            className={`mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              isAdmin
-                ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
-                : 'bg-slate-800 text-slate-400 border border-slate-700 hover:border-slate-600'
-            }`}
-          >
-            {isAdmin ? 'Exit Admin Mode' : 'Admin Login'}
-          </button>
+    <section id="skills" className="py-24 md:py-32 border-b border-line">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-16 pb-6 border-b border-line gap-4">
+          <div className="flex items-baseline gap-4">
+            <span className="font-mono text-sm text-ink-soft">02</span>
+            <h2 className="section-title">Capabilities</h2>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="font-mono text-xs uppercase tracking-widest text-ink-muted">
+              Tools &amp; Competencies
+            </p>
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  setEditingSkill(null);
+                  setShowForm(true);
+                }}
+                className="btn-primary py-1 px-3 text-xs"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" /> Add Skill
+              </button>
+            )}
+          </div>
         </div>
 
-        {isAdmin && (
-          <div className="flex justify-center mb-8">
-            <button
-              onClick={() => {
-                setEditingSkill(null);
-                setShowForm(true);
-              }}
-              className="btn-primary"
-            >
-              <Plus className="w-5 h-5" />
-              Add New Skill
-            </button>
+        {/* Loading Skeleton */}
+        {loading && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="border-t border-line pt-6 animate-pulse">
+                <div className="h-4 w-28 bg-line mb-6" />
+                <div className="space-y-3">
+                  <div className="h-4 w-3/4 bg-line" />
+                  <div className="h-4 w-1/2 bg-line" />
+                  <div className="h-4 w-2/3 bg-line" />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
-        {designSkills.length === 0 ? (
-          <div className="text-center py-16">
-            <Palette className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-400 text-lg">No design skills added yet</p>
+        {/* Empty State */}
+        {!loading && skills.length === 0 && (
+          <div className="py-16 text-center border border-dashed border-line">
+            <p className="text-ink-muted font-mono text-sm">No capabilities listed yet.</p>
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  setEditingSkill(null);
+                  setShowForm(true);
+                }}
+                className="btn-primary mt-4"
+              >
+                <Plus className="w-4 h-4 mr-1" /> Add First Skill
+              </button>
+            )}
           </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {designSkills.map((skill) => (
-              <SkillCard
-                key={skill.id}
-                skill={skill}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                isAdmin={isAdmin}
-              />
+        )}
+
+        {/* Grouped Plain-Text Columns */}
+        {!loading && skills.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
+            {categories.map((category, catIdx) => (
+              <div key={category} className="border-t border-line pt-6">
+                <div className="flex items-baseline justify-between mb-6">
+                  <h3 className="font-serif text-xl font-normal text-ink">
+                    {category}
+                  </h3>
+                  <span className="font-mono text-xs text-ink-soft">
+                    ({String(catIdx + 1).padStart(2, '0')})
+                  </span>
+                </div>
+
+                <ul className="divide-y divide-line font-sans text-sm">
+                  {groupedSkills[category].map((skill) => (
+                    <li
+                      key={skill.id}
+                      className="py-3 flex items-center justify-between group hover:text-accent transition-colors duration-150"
+                    >
+                      <span className="text-ink group-hover:text-accent font-medium">
+                        {skill.name}
+                      </span>
+
+                      {isAdmin && (
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => handleEdit(skill)}
+                            className="p-1 text-ink-muted hover:text-ink"
+                            title="Edit"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(skill.id)}
+                            className="p-1 text-ink-muted hover:text-accent"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         )}

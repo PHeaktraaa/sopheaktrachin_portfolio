@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useContactForm } from '../../hooks/useData';
-import { Send, Mail, MapPin, Phone, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowUpRight, Loader2, Check } from 'lucide-react';
 
 export function Contact() {
   const { submitContact, isSubmitting, submitSuccess, error, resetSuccess } = useContactForm();
@@ -16,10 +16,12 @@ export function Contact() {
     const errors: Record<string, string> = {};
     if (!formData.name.trim()) errors.name = 'Name is required';
     if (!formData.email.trim()) errors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = 'Invalid email format';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      errors.email = 'Invalid email address';
     if (!formData.subject.trim()) errors.subject = 'Subject is required';
     if (!formData.message.trim()) errors.message = 'Message is required';
-    else if (formData.message.trim().length < 10) errors.message = 'Message must be at least 10 characters';
+    else if (formData.message.trim().length < 10)
+      errors.message = 'Must be at least 10 characters';
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -43,209 +45,202 @@ export function Contact() {
     }
   };
 
-  if (submitSuccess) {
-    return (
-      <section id="contact" className="py-20 md:py-32 relative">
-        <div className="absolute inset-0 bg-dots-pattern opacity-30" />
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-16">
-            <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-green-400" />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-100 mb-2">Message Sent Successfully!</h2>
-            <p className="text-slate-400 mb-8">Thank you for reaching out. I'll get back to you as soon as possible.</p>
-            <button onClick={resetSuccess} className="btn-primary">
-              Send Another Message
-            </button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section id="contact" className="py-20 md:py-32 relative">
-      <div className="absolute inset-0 bg-grid-pattern opacity-30" />
-
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="section-title gradient-text">Get In Touch</h2>
-          <p className="section-subtitle mx-auto">
-            Have a project in mind or want to collaborate? Let's connect!
+    <section id="contact" className="py-24 md:py-32">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-16 pb-6 border-b border-line gap-4">
+          <div className="flex items-baseline gap-4">
+            <span className="font-mono text-sm text-ink-soft">05</span>
+            <h2 className="section-title">Contact</h2>
+          </div>
+          <p className="font-mono text-xs uppercase tracking-widest text-ink-muted">
+            Inquiries &amp; Collaboration
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
-          <div className="lg:col-span-2 animate-fade-in-right">
-            <div className="card p-8 h-full">
-              <h3 className="text-2xl font-bold text-slate-100 mb-6">Contact Information</h3>
-              <p className="text-slate-400 mb-8">
-                Feel free to reach out through any of these channels. I'm always open to discussing new opportunities, creative ideas, or ways to help bring your vision to life.
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          {/* Left Column: Oversized direct email link & details */}
+          <div className="lg:col-span-5 flex flex-col justify-between">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-wider text-ink-muted mb-4">
+                Direct Inquiry
               </p>
 
-              <div className="space-y-6">
-                <a
-                  href="mailto:pheaktrachen141@gmail.com"
-                  className="flex items-center gap-4 group"
-                >
-                  <div className="p-3 rounded-xl bg-primary-500/10 border border-primary-500/30 group-hover:bg-primary-500/20 transition-colors">
-                    <Mail className="w-5 h-5 text-primary-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-500">Email</p>
-                    <p className="text-slate-200 group-hover:text-primary-400 transition-colors">pheaktrachen141@gmail.com</p>
-                  </div>
-                </a>
+              <a
+                href="mailto:pheaktrachen141@gmail.com"
+                className="font-serif text-2xl sm:text-3xl lg:text-4xl text-ink hover:text-accent font-normal break-all transition-colors duration-150 inline-flex items-baseline gap-2 mb-8"
+              >
+                <span>pheaktrachen141@gmail.com</span>
+                <ArrowUpRight className="w-5 h-5 shrink-0 translate-y-1" />
+              </a>
 
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-accent-500/10 border border-accent-500/30">
-                    <MapPin className="w-5 h-5 text-accent-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-500">Location</p>
-                    <p className="text-slate-200">Phnom Penh, Cambodia</p>
-                  </div>
-                </div>
+              <p className="text-ink-muted text-base leading-relaxed mb-8 font-light">
+                Available for internships, freelance design engagements, and web engineering opportunities. Based in Phnom Penh (UTC+7).
+              </p>
+            </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-green-500/10 border border-green-500/30">
-                    <Phone className="w-5 h-5 text-green-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-500">Phone</p>
-                    <p className="text-slate-200">+855 76-568-8683</p>
-                  </div>
-                </div>
+            <div className="border-t border-line pt-6 font-mono text-xs text-ink-muted space-y-2">
+              <div>
+                <span className="text-ink-soft uppercase tracking-wider block mb-1">
+                  Location
+                </span>
+                <span className="text-ink">Phnom Penh, Cambodia</span>
               </div>
-
-              <div className="mt-10 pt-8 border-t border-slate-700">
-                <p className="text-sm text-slate-500 mb-4">Follow me on social media</p>
-                <div className="flex gap-3">
+              <div className="pt-2">
+                <span className="text-ink-soft uppercase tracking-wider block mb-1">
+                  Profiles
+                </span>
+                <div className="flex gap-4">
                   <a
                     href="https://github.com/PHeaktraaa"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 rounded-xl bg-slate-800 text-slate-400 hover:text-slate-100 hover:bg-slate-700 transition-colors"
+                    className="text-ink hover:text-accent flex items-center gap-1"
                   >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
+                    GitHub <ArrowUpRight className="w-3 h-3" />
                   </a>
                   <a
-                    href="https://www.linkedin.com/in/sopheaktra-chin-23103a393/"
+                    href="https://www.linkedin.com/in/sopheaktrachin-23103a393/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 rounded-xl bg-slate-800 text-slate-400 hover:text-slate-100 hover:bg-slate-700 transition-colors"
+                    className="text-ink hover:text-accent flex items-center gap-1"
                   >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                    </svg>
+                    LinkedIn <ArrowUpRight className="w-3 h-3" />
                   </a>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-3 animate-fade-in-left">
-            <div className="card p-8">
-              <h3 className="text-2xl font-bold text-slate-100 mb-6">Send a Message</h3>
-
-              {error && (
-                <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
-                  <p className="text-red-300 text-sm">{error}</p>
+          {/* Right Column: Underlined Minimal Form */}
+          <div className="lg:col-span-7">
+            {submitSuccess ? (
+              <div className="border border-line bg-white p-8 sm:p-12">
+                <div className="flex items-center gap-2 font-mono text-xs text-accent uppercase tracking-wider mb-4">
+                  <Check className="w-4 h-4" /> Received
                 </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid md:grid-cols-2 gap-5">
+                <h3 className="font-serif text-3xl font-normal text-ink mb-4">
+                  Message delivered.
+                </h3>
+                <p className="text-ink-muted text-base leading-relaxed mb-8 font-light">
+                  Thank you for reaching out. Your note has been stored and forwarded; I will reply to your email shortly.
+                </p>
+                <button onClick={resetSuccess} className="btn-secondary">
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {/* Name field */}
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
+                    <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
                       Your Name *
                     </label>
                     <input
                       type="text"
-                      id="name"
                       value={formData.name}
                       onChange={(e) => handleChange('name', e.target.value)}
-                      className={`input ${validationErrors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}`}
-                      placeholder="Your_Name"
+                      placeholder="Jane Doe"
+                      className={`w-full bg-transparent border-b ${
+                        validationErrors.name ? 'border-accent' : 'border-line-dark focus:border-ink'
+                      } py-2.5 text-sm text-ink placeholder-ink-soft focus:outline-none transition-colors rounded-none`}
                     />
                     {validationErrors.name && (
-                      <p className="mt-1.5 text-sm text-red-400">{validationErrors.name}</p>
+                      <p className="mt-1 font-mono text-xs text-accent">
+                        {validationErrors.name}
+                      </p>
                     )}
                   </div>
+
+                  {/* Email field */}
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
-                      Your Email *
+                    <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+                      Email Address *
                     </label>
                     <input
                       type="email"
-                      id="email"
                       value={formData.email}
                       onChange={(e) => handleChange('email', e.target.value)}
-                      className={`input ${validationErrors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}`}
-                      placeholder="example@gmail.com"
+                      placeholder="jane@example.com"
+                      className={`w-full bg-transparent border-b ${
+                        validationErrors.email ? 'border-accent' : 'border-line-dark focus:border-ink'
+                      } py-2.5 text-sm text-ink placeholder-ink-soft focus:outline-none transition-colors rounded-none`}
                     />
                     {validationErrors.email && (
-                      <p className="mt-1.5 text-sm text-red-400">{validationErrors.email}</p>
+                      <p className="mt-1 font-mono text-xs text-accent">
+                        {validationErrors.email}
+                      </p>
                     )}
                   </div>
                 </div>
 
+                {/* Subject field */}
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-slate-300 mb-2">
+                  <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
                     Subject *
                   </label>
                   <input
                     type="text"
-                    id="subject"
                     value={formData.subject}
                     onChange={(e) => handleChange('subject', e.target.value)}
-                    className={`input ${validationErrors.subject ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}`}
-                    placeholder="Project Collaboration"
+                    placeholder="Project Inquiry / Opportunity"
+                    className={`w-full bg-transparent border-b ${
+                      validationErrors.subject ? 'border-accent' : 'border-line-dark focus:border-ink'
+                    } py-2.5 text-sm text-ink placeholder-ink-soft focus:outline-none transition-colors rounded-none`}
                   />
                   {validationErrors.subject && (
-                    <p className="mt-1.5 text-sm text-red-400">{validationErrors.subject}</p>
+                    <p className="mt-1 font-mono text-xs text-accent">
+                      {validationErrors.subject}
+                    </p>
                   )}
                 </div>
 
+                {/* Message field */}
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">
+                  <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
                     Message *
                   </label>
                   <textarea
-                    id="message"
+                    rows={4}
                     value={formData.message}
                     onChange={(e) => handleChange('message', e.target.value)}
-                    rows={5}
-                    className={`input resize-none ${validationErrors.message ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}`}
-                    placeholder="Tell me about your project, job opportunity, or just say hello..."
+                    placeholder="Outline your timeline, scope, or questions..."
+                    className={`w-full bg-transparent border-b ${
+                      validationErrors.message ? 'border-accent' : 'border-line-dark focus:border-ink'
+                    } py-2.5 text-sm text-ink placeholder-ink-soft focus:outline-none transition-colors rounded-none resize-none`}
                   />
                   {validationErrors.message && (
-                    <p className="mt-1.5 text-sm text-red-400">{validationErrors.message}</p>
+                    <p className="mt-1 font-mono text-xs text-accent">
+                      {validationErrors.message}
+                    </p>
                   )}
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-primary w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-5 h-5" />
-                      Send Message
-                    </>
-                  )}
-                </button>
+                {error && (
+                  <p className="font-mono text-xs text-accent border border-accent/30 p-3 bg-accent-light">
+                    {error}
+                  </p>
+                )}
+
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="btn-primary w-full sm:w-auto"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin mr-1" /> Sending...
+                      </>
+                    ) : (
+                      'Transmit Message'
+                    )}
+                  </button>
+                </div>
               </form>
-            </div>
+            )}
           </div>
         </div>
       </div>

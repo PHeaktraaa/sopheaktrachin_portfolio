@@ -1,65 +1,20 @@
 import { useState } from 'react';
 import { useExperience } from '../../hooks/useData';
 import { useAdmin } from '../../contexts/AdminContext';
-import { GraduationCap, Briefcase, Plus, Pencil, Trash2, X, Check, Calendar } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Check } from 'lucide-react';
 import type { Experience } from '../../lib/supabase';
 
-function ExperienceCard({ experience, onEdit, onDelete, isAdmin }: { experience: Experience; onEdit: (exp: Experience) => void; onDelete: (id: string) => void; isAdmin: boolean }) {
-  const IconComponent = experience.type === 'education' ? GraduationCap : Briefcase;
-  const startDate = new Date(experience.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  const endDate = experience.end_date
-    ? new Date(experience.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-    : 'Present';
-
-  return (
-    <div className="group relative card-hover p-6">
-      <div className="flex items-start gap-4">
-        <div className={`shrink-0 p-3 rounded-xl ${experience.type === 'education' ? 'bg-gradient-to-br from-blue-600 to-cyan-500' : 'bg-gradient-to-br from-green-600 to-emerald-500'}`}>
-          <IconComponent className="w-6 h-6 text-white" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-100 group-hover:text-primary-400 transition-colors">
-                {experience.title}
-              </h3>
-              <p className="text-primary-400 font-medium">{experience.organization}</p>
-            </div>
-            {isAdmin && (
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                <button
-                  onClick={() => onEdit(experience)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-primary-400 hover:bg-slate-800 transition-colors"
-                >
-                  <Pencil className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => onDelete(experience.id)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-slate-800 transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-2 mt-2 text-sm text-slate-500">
-            <Calendar className="w-4 h-4" />
-            <span>{startDate} - {endDate}</span>
-          </div>
-          {experience.description && (
-            <p className="mt-3 text-slate-400 text-sm leading-relaxed">
-              {experience.description}
-            </p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ExperienceForm({ experience, onSave, onCancel }: { experience?: Experience | null; onSave: (data: Omit<Experience, 'id' | 'created_at'>) => void; onCancel: () => void }) {
+function ExperienceForm({
+  experience,
+  onSave,
+  onCancel,
+}: {
+  experience?: Experience | null;
+  onSave: (data: Omit<Experience, 'id' | 'created_at'>) => void;
+  onCancel: () => void;
+}) {
   const [formData, setFormData] = useState({
-    type: experience?.type || 'work' as 'education' | 'work',
+    type: experience?.type || ('work' as 'education' | 'work'),
     title: experience?.title || '',
     organization: experience?.organization || '',
     description: experience?.description || '',
@@ -77,75 +32,73 @@ function ExperienceForm({ experience, onSave, onCancel }: { experience?: Experie
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="card w-full max-w-lg p-6 animate-scale-in">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-slate-100">
-            {experience ? 'Edit Experience' : 'Add New Experience'}
+    <div className="fixed inset-0 bg-ink/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-bg border border-line p-6 sm:p-8 max-w-lg w-full">
+        <div className="flex items-baseline justify-between mb-6 pb-4 border-b border-line">
+          <h3 className="font-serif text-2xl font-normal text-ink">
+            {experience ? 'Edit Record' : 'Add Background Entry'}
           </h3>
-          <button onClick={onCancel} className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors">
+          <button onClick={onCancel} className="text-ink-muted hover:text-ink p-1">
             <X className="w-5 h-5" />
           </button>
         </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Type</label>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setFormData({ ...formData, type: 'education' })}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border transition-all ${
-                  formData.type === 'education'
-                    ? 'bg-blue-500/20 border-blue-500 text-blue-400'
-                    : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
-                }`}
-              >
-                <GraduationCap className="w-5 h-5" />
-                Education
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData({ ...formData, type: 'work' })}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border transition-all ${
-                  formData.type === 'work'
-                    ? 'bg-green-500/20 border-green-500 text-green-400'
-                    : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
-                }`}
-              >
-                <Briefcase className="w-5 h-5" />
-                Work
-              </button>
+            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              Entry Type
+            </label>
+            <div className="flex gap-2">
+              {(['education', 'work'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, type: t })}
+                  className={`flex-1 py-2 font-mono text-xs uppercase tracking-wider border transition-colors ${
+                    formData.type === t
+                      ? 'border-ink bg-ink text-bg'
+                      : 'border-line text-ink-muted hover:border-ink'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
             </div>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
-              {formData.type === 'education' ? 'Degree / Certificate' : 'Job Title'} *
+            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              Title / Degree *
             </label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="input"
-              placeholder={formData.type === 'education' ? 'Bachelor of Science in Computer Science' : 'Frontend Developer'}
+              placeholder="e.g. Bachelor of Science in Software Engineering"
               required
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
-              {formData.type === 'education' ? 'Institution' : 'Company'} *
+            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              Institution / Company *
             </label>
             <input
               type="text"
               value={formData.organization}
               onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
               className="input"
-              placeholder={formData.type === 'education' ? 'University of Technology' : 'Tech Solutions Inc.'}
+              placeholder="e.g. University / Agency"
               required
             />
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Start Date *</label>
+              <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+                Start Date *
+              </label>
               <input
                 type="date"
                 value={formData.start_date}
@@ -155,32 +108,37 @@ function ExperienceForm({ experience, onSave, onCancel }: { experience?: Experie
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">End Date</label>
+              <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+                End Date (Empty = Present)
+              </label>
               <input
                 type="date"
                 value={formData.end_date}
                 onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
                 className="input"
               />
-              <p className="text-xs text-slate-500 mt-1">Leave empty if current</p>
             </div>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Description</label>
+            <label className="block font-mono text-xs uppercase tracking-wider text-ink-muted mb-2">
+              Notes / Description
+            </label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               className="input min-h-[80px] resize-none"
-              placeholder="Describe your responsibilities, achievements, or coursework..."
+              placeholder="Key coursework, accomplishments, or scope..."
             />
           </div>
-          <div className="flex gap-3 pt-4">
+
+          <div className="flex gap-3 pt-4 border-t border-line">
             <button type="button" onClick={onCancel} className="btn-secondary flex-1">
               Cancel
             </button>
             <button type="submit" className="btn-primary flex-1">
-              <Check className="w-4 h-4" />
-              {experience ? 'Update' : 'Add'} Experience
+              <Check className="w-4 h-4 mr-1" />
+              {experience ? 'Update' : 'Save'}
             </button>
           </div>
         </form>
@@ -190,18 +148,15 @@ function ExperienceForm({ experience, onSave, onCancel }: { experience?: Experie
 }
 
 export function ExperienceSection() {
-  const { experiences, loading, createExperience, updateExperience, deleteExperience } = useExperience();
-  const { isAdmin, setShowLogin, logout } = useAdmin();
+  const { experiences, loading, createExperience, updateExperience, deleteExperience } =
+    useExperience();
+  const { isAdmin } = useAdmin();
   const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'education' | 'work'>('all');
 
-  const educationList = experiences.filter(e => e.type === 'education');
-  const workList = experiences.filter(e => e.type === 'work');
-
-  const filteredExperiences = activeTab === 'all'
-    ? experiences
-    : activeTab === 'education' ? educationList : workList;
+  const filtered =
+    activeTab === 'all' ? experiences : experiences.filter((e) => e.type === activeTab);
 
   const handleEdit = (exp: Experience) => {
     setEditingExperience(exp);
@@ -209,7 +164,7 @@ export function ExperienceSection() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this experience?')) {
+    if (confirm('Are you sure you want to delete this record?')) {
       await deleteExperience(id);
     }
   };
@@ -223,102 +178,154 @@ export function ExperienceSection() {
       }
       setShowForm(false);
       setEditingExperience(null);
-    } catch (err) {
-      alert(`Failed to save experience: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } catch (err: any) {
+      alert(`Error saving record: ${err?.message || 'Unknown error'}`);
     }
   };
 
-  if (loading) {
-    return (
-      <section id="experience" className="py-20 md:py-32 bg-slate-900/50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="h-10 w-48 bg-slate-800 rounded-lg animate-pulse mx-auto mb-4" />
-            <div className="h-6 w-96 bg-slate-800 rounded animate-pulse mx-auto" />
-          </div>
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-32 bg-slate-800 rounded-2xl animate-pulse" />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const formatPeriod = (start: string, end: string | null) => {
+    const s = new Date(start).toLocaleDateString('en-US', {
+      month: 'short',
+      year: 'numeric',
+    });
+    const e = end
+      ? new Date(end).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+      : 'Present';
+    return `${s} — ${e}`;
+  };
 
   return (
-    <section id="experience" className="py-20 md:py-32 bg-slate-900/50 relative">
-      <div className="absolute inset-0 bg-grid-pattern opacity-30" />
+    <section id="experience" className="py-24 md:py-32 border-b border-line">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-16 pb-6 border-b border-line gap-4">
+          <div className="flex items-baseline gap-4">
+            <span className="font-mono text-sm text-ink-soft">04</span>
+            <h2 className="section-title">Background</h2>
+          </div>
 
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="section-title gradient-text">Education & Experience</h2>
-          <p className="section-subtitle mx-auto">
-            My academic journey and professional background
-          </p>
-          <button
-            onClick={() => (isAdmin ? logout() : setShowLogin(true))}
-            className={`mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              isAdmin
-                ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
-                : 'bg-slate-800 text-slate-400 border border-slate-700 hover:border-slate-600'
-            }`}
-          >
-            {isAdmin ? 'Exit Admin Mode' : 'Admin Login'}
-          </button>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 font-mono text-xs">
+              {(['all', 'education', 'work'] as const).map((tab, idx) => (
+                <div key={tab} className="flex items-center gap-2">
+                  <button
+                    onClick={() => setActiveTab(tab)}
+                    className={`py-1 capitalize transition-colors ${
+                      activeTab === tab
+                        ? 'text-ink font-medium border-b border-ink'
+                        : 'text-ink-muted hover:text-ink'
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                  {idx < 2 && <span className="text-line-dark">/</span>}
+                </div>
+              ))}
+            </div>
+
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  setEditingExperience(null);
+                  setShowForm(true);
+                }}
+                className="btn-primary py-1 px-3 text-xs"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" /> Add Entry
+              </button>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div className="flex gap-2">
-            {(['all', 'education', 'work'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === tab
-                    ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
-                    : 'bg-slate-800 text-slate-400 border border-slate-700 hover:border-slate-600'
-                }`}
-              >
-                {tab === 'education' && <GraduationCap className="w-4 h-4" />}
-                {tab === 'work' && <Briefcase className="w-4 h-4" />}
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
+        {/* Loading state */}
+        {loading && (
+          <div className="divide-y divide-line">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="py-8 grid lg:grid-cols-12 gap-6 animate-pulse">
+                <div className="lg:col-span-3 h-4 bg-line w-28" />
+                <div className="lg:col-span-9 space-y-3">
+                  <div className="h-6 bg-line w-1/2" />
+                  <div className="h-4 bg-line w-1/3" />
+                  <div className="h-12 bg-line w-full" />
+                </div>
+              </div>
             ))}
           </div>
-          {isAdmin && (
-            <button
-              onClick={() => {
-                setEditingExperience(null);
-                setShowForm(true);
-              }}
-              className="btn-primary"
-            >
-              <Plus className="w-5 h-5" />
-              Add Experience
-            </button>
-          )}
-        </div>
+        )}
 
-        {filteredExperiences.length === 0 ? (
-          <div className="text-center py-16">
-            <Briefcase className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-400 text-lg">No experience entries found</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredExperiences.map((exp, index) => (
-              <div
-                key={exp.id}
-                className="animate-fade-in-up opacity-0"
-                style={{ animationDelay: `${index * 100}ms` }}
+        {/* Empty state */}
+        {!loading && filtered.length === 0 && (
+          <div className="py-16 text-center border border-dashed border-line">
+            <p className="text-ink-muted font-mono text-sm">No records found.</p>
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  setEditingExperience(null);
+                  setShowForm(true);
+                }}
+                className="btn-primary mt-4"
               >
-                <ExperienceCard
-                  experience={exp}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  isAdmin={isAdmin}
-                />
+                <Plus className="w-4 h-4 mr-1" /> Add First Entry
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Two-column Chronological List with Mono Dates on the Left */}
+        {!loading && filtered.length > 0 && (
+          <div className="divide-y divide-line">
+            {filtered.map((item) => (
+              <div
+                key={item.id}
+                className="py-10 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12 group"
+              >
+                {/* Left: Date & Type */}
+                <div className="lg:col-span-3">
+                  <p className="font-mono text-xs uppercase tracking-wider text-ink-muted">
+                    {formatPeriod(item.start_date, item.end_date)}
+                  </p>
+                  <p className="font-mono text-[11px] text-ink-soft uppercase mt-1">
+                    {item.type}
+                  </p>
+                </div>
+
+                {/* Right: Title, Organization, Description, Admin */}
+                <div className="lg:col-span-9">
+                  <div className="flex items-baseline justify-between gap-4 mb-2">
+                    <h3 className="font-serif text-xl sm:text-2xl font-normal text-ink group-hover:text-accent transition-colors">
+                      {item.title}
+                    </h3>
+
+                    {isAdmin && (
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          onClick={() => handleEdit(item)}
+                          className="p-1 text-ink-muted hover:text-ink"
+                          title="Edit"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="p-1 text-ink-muted hover:text-accent"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="font-sans text-sm font-medium text-ink-muted mb-3">
+                    {item.organization}
+                  </p>
+
+                  {item.description && (
+                    <p className="text-sm text-ink-muted leading-relaxed font-light max-w-2xl">
+                      {item.description}
+                    </p>
+                  )}
+                </div>
               </div>
             ))}
           </div>

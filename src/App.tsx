@@ -12,7 +12,7 @@ import { AdminLoginModal } from './components/AdminLoginModal';
 function App() {
   return (
     <AdminProvider>
-      <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden">
+      <div className="min-h-screen bg-bg text-ink selection:bg-accent/20 selection:text-ink">
         <Navigation />
 
         <main>
